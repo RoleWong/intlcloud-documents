@@ -1,17 +1,18 @@
 
 ## Description
 
-**Message Reactions** with Emoji have been supported since the version of 0.1.3 of Flutter TUIKit.
+**Message Reactions** Emoji have been added since the version of 0.1.3 of Flutter TUIKit.
 
-This module is developed with message modify.
+This module is developed with message modification.
 
 ## Demonstrations
 
 ### Send Emoji reactions
 
-Press and hold the message want to reply to, and the Message Action Menu will appear.
+Press and hold the message you want to reply to, and the Message Action Menu will appear.
 
-After enable this module, on this menu, near the direction of the message itself, there will be an additional emoticon selection area. This area supports clicking the "+" to expand and display more stickers.
+After enabling this module, on this menu, near the direction of the message itself, there will be an additional emoticon selection area. This area supports clicking the "+" to expand and display more stickers.
+
 
 | Message Action Menu | More Emoji |
 |---------|---------|
@@ -23,7 +24,7 @@ All message reactions are displayed below the message and all users in the chat 
 
 Below the message, the sender names are displayed after the emoji. Click on the name to trigger the `onTapAvatar` callback, to view the sender's profile.
 
-Click on each reaction been sent, can easily quick send the same Emoji or remove this reaction. After removal, the reaction disappears with no trace and no one will be notified.
+Click on each reaction being sent, can easily quickly send the same Emoji or remove this reaction. After removal, the reaction disappears with no trace and no one will be notified.
 
 Click on "...total xx" to view the complete list of senders.
 
