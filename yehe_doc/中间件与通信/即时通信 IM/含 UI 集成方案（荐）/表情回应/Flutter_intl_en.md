@@ -1,7 +1,7 @@
 
 ## Description
 
-Message reactions with Emoji have been supported since the version of 0.1.3 of Flutter TUIKit.
+**Message Reactions** with Emoji have been supported since the version of 0.1.3 of Flutter TUIKit.
 
 This module is developed with message modify.
 
@@ -17,7 +17,7 @@ After enable this module, on this menu, near the direction of the message itself
 |---------|---------|
 | <img style="width:250px" src="https://qcloudimg.tencent-cloud.cn/raw/b33931c12c614b68ef719f3d47e570e3.jpg"  /> | <img style="width:250px" src="https://qcloudimg.tencent-cloud.cn/raw/65d2c3e75d13ca7157cd9222f322d4aa.jpg" /> |
 
-### View Emoji reaction
+### View Emoji reactions
 
 All message reactions are displayed below the message and all users in the chat can see them.
 
