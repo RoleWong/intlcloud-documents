@@ -1,5 +1,10 @@
 
 ## 简介
+内容审核功能是由 [数据万象](https://www.tencentcloud.com/document/product/1045)（Cloud Infinite，CI）提供的，数据万象将处理能力与 COS SDK 完全结合，您可以直接按照本篇文档指引进行使用。
+
+>?使用内容审核服务需拥有数据万象使用权限：
+- 主账号请 [单击此处](https://console.cloud.tencent.com/cam/role/grant?roleName=CI_QCSRole&policyName=QcloudCOSDataFullControl,QcloudAccessForCIRole,QcloudPartAccessForCIRole&principal=eyJzZXJ2aWNlIjoiY2kucWNsb3VkLmNvbSJ9&serviceType=%E6%95%B0%E6%8D%AE%E4%B8%87%E8%B1%A1&s_url=https%3A%2F%2Fconsole.cloud.tencent.com%2Fci) 进行角色授权。
+- 子账号请参见 [授权子账号接入数据万象服务](https://intl.cloud.tencent.com/document/product/1045/33450) 文档。
 
 本文档提供关于文档审核的相关的 API 概览以及 SDK 示例代码。
 
@@ -77,7 +82,7 @@ type DocumentAuditingJobConf struct {
 | InputDataId | 文档标识，该字段在结果中返回原始内容，长度限制为512字节。 | String |
 | InputUserInfo | 用户业务字段。 | Object |
 | Conf        | 审核规则配置。                                                 | Struct |
-| BizType     | 审核策略，不填写则使用默认策略。可在控制台进行配置，详情请参见 设置审核策略。 | String |
+| BizType     | 审核策略，不填写则使用默认策略。可在控制台进行配置，详情请参见 [设置审核策略](https://intl.cloud.tencent.com/document/product/436/52095)。 | String |
 | DetectType  | 审核的场景类型，有效值：Porn（涉黄）、Ads（广告），可以传入多种类型，不同类型以逗号分隔，例如：Porn,Ads。如您有更多场景的审核需要，请使用 BizType 参数。 | String |
 | Callback    | 审核结果可以回调形式发送至您的回调地址，支持以 `http://` 或者 `https://` 开头的地址，例如：`http://www.callback.com`。 | String |
 

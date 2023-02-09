@@ -5,7 +5,8 @@
 The CLB parameters and features that cannot be defined by the semantics of `Ingress YAML` can be configured through `TkeServiceConfig`.
 
 ### Configuration instructions
-`TkeServiceConfig` helps you quickly configure CLB. You can specify a target configuration for application to an Ingress through the Ingress annotation `**ingress.cloud.tencent.com/tke-service-config:&lt;config-name&gt;**`.
+`TkeServiceConfig` helps you quickly configure CLB. You can specify a target configuration for application to an Ingress through the Ingress annotation **`ingress.cloud.tencent.com/tke-service-config:&lt;config-name&gt;`**.
+
 >! The `TkeServiceConfig` resource needs to be in the same namespace as the Ingress.
 
 `TkeServiceConfig` doesn't help you configure and modify the protocol, port, domain name, and forwarding path; instead, you need to describe them in the configuration to specify the forwarding rule for delivery by the configuration.
@@ -19,14 +20,14 @@ There can be multiple domain names under each layer-7 listener and multiple forw
  - `spec.loadBalancer.l7Listeners.port`: listening port
  - `spec.loadBalancer.l7Listeners.domains[].domain`: domain name
  - `spec.loadBalancer.l7Listeners.domains[].rules[].url`: forwarding path
- - `spec.loadBalancer.l7listeners.protocol.domain.rules.url.forwardType`: specifying a backend protocol
+ - `spec.loadBalancer.l7listeners.protocol.domain.rules.url.forwardType`: specified backend protocol
     - A backend protocol is the protocol between a CLB instance and the real server. If you select HTTP as the backend protocol, you need to deploy HTTP service for the real server. If you select HTTPS as the backend protocol, you need to deploy HTTPS service for the real server. Encryption and decryption of HTTPS service will consume more resources. For more information, see [Configuring a HTTPS Listener for a CLB Instance](https://intl.cloud.tencent.com/document/product/214/32516).
 
 >?When your domain name is configured as the default value, i.e., public or private VIP, you can configure by entering a null value in the `domain` field.
 
 
 ## Association between Ingress and TkeServiceConfig
-1. If you set `ingress.cloud.tencent.com/tke-service-config-auto:&lt;true&gt;` when creating an Ingress, `&lt;IngressName>-auto-ingress-config` will be created automatically. You can also specify the `TkeServiceConfig` you created on your own directly through `ingress.cloud.tencent.com/tke-service-config:&lt;config-name&gt;`. The two annotations cannot be used at the same time.  
+1. If you set `**ingress.cloud.tencent.com/tke-service-config-auto:&lt;true&gt;**` when creating an Ingress, `&lt;IngressName>-auto-ingress-config` will be created automatically. You can also specify the `TkeServiceConfig` you created on your own directly through `**ingress.cloud.tencent.com/tke-service-config:&lt;config-name&gt;**`. The two annotations cannot be used at the same time.  
 2. The name of the custom configuration you use for a Service/Ingress cannot be suffixed with `-auto-service-config` or `-auto-ingress-config`.
 3. The automatically created `TkeServiceConfig` has the following sync behaviors:
   - When a layer-7 forwarding rule is added during Ingress resource update, `Ingress-Controller` will automatically add the corresponding `TkeServiceConfig` configuration segment for the rule if it doesn't exist.
@@ -41,7 +42,7 @@ There can be multiple domain names under each layer-7 listener and multiple forw
   - If the Ingress listener cannot find the corresponding configuration, the listener will not be modified.
   - If the Ingress listener finds the corresponding configuration, but the configuration doesn't contain declared attributes, the listener will not be modified.
 
-## Examples
+## License request example
 
 ### Sample deployment: jetty-deployment.yaml
 ```yaml
@@ -124,7 +125,7 @@ metadata:
     kubernetes.io/ingress.https-rules: '[{"path":"/","backend":{"serviceName":"jetty-service","servicePort":"443","host":"sample.tencent.com"}}]'
     ingress.cloud.tencent.com/tke-service-config: jetty-ingress-config
     # Specify the existing `tke-service-config`
-    # service.cloud.tencent.com/tke-service-config-auto: true 
+    # ingress.cloud.tencent.com/tke-service-config-auto: "true"
     # Automatically create a `tke-service-config`
   name: jetty-ingress
   namespace: default
@@ -147,7 +148,7 @@ spec:
   - secretName: jetty-cert-secret
 ```
 This example contains the following configuration:
-- Two different protocols are used together. The default domain name (public IP) is used to expose an HTTP service, and the `sample.tencent.com` domain name is used to expose an HTTPS service. <!-- For more information, please see [Using HTTP and HTTPS protocols together with Ingress](). -->
+- Two different protocols are used together. The default domain name (public IP) is used to expose an HTTP service, and the `sample.tencent.com` domain name is used to expose an HTTPS service.
 - The forwarding path of the HTTP service is `/health`, and that of the HTTPS service is `/`.
 - The `jetty-ingress-config` CLB configuration is used.
 
@@ -173,6 +174,7 @@ spec:
     - protocol: HTTPS
       port: 443
       defaultServer: "sample.tencent.com" # Default domain name
+      keepaliveEnable: 1                  # Enable persistent connection for the listener
       domains:
       - domain: "sample.tencent.com"
         rules:

@@ -17,7 +17,8 @@ Chat UIKit  中的组件在实现 UI 功能的同时，会调用 IM SDK 相应�
 
 ![img.png](https://web.sdk.qcloud.com/im/demo/TUIkit/react-static/images/home.png)
 
-## 跑通demo
+
+### 跑通demo
 
 ### 步骤一：下载源码
 ```
@@ -51,7 +52,7 @@ $ npm run start
 4. 在输入框输入消息，按下"enter"键发送。
    ![](https://web.sdk.qcloud.com/im/demo/TUIkit/react-static/images/chat.gif)
 
-## 集成 chat-uikit-react
+### 集成 chat-uikit-react
 
 ### 步骤一：Installation
 ```

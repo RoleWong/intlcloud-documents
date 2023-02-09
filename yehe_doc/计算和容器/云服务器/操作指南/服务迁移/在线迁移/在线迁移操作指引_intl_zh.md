@@ -14,8 +14,8 @@
 - [下载](https://go2tencentcloud-1251783334.cos.ap-guangzhou.myqcloud.com/latest/go2tencentcloud.zip) 迁移工具压缩包。
 - 建议暂停源端服务器上的应用程序，以避免迁移时对现有应用程序可能产生的影响。
 - 建议您在迁移前，通过下方式进行数据备份：
-  - 源端主机：可以选择源服务器快照功能等方式备份数据。
-  - 目标云服务器：可以选择 [创建快照](https://intl.cloud.tencent.com/document/product/362/5755) 等方式备份目标云服务器数据。
+   - 源端主机：可以选择源服务器快照功能等方式备份数据。
+   - 目标云服务器：可以选择 [创建快照](https://intl.cloud.tencent.com/document/product/362/5755) 等方式备份目标云服务器数据。
 
 ## 迁移步骤
 
@@ -60,11 +60,12 @@
 		<li>安全组：安全组中开放80、443和3389端口。</li>
 		<li>
 		带宽设置：建议尽可能调大两端的带宽，以便更快迁移。迁移过程中，会产生约等于数据量的流量消耗，如有必要请提前调整网络计费模式。</li>
+<li>
+		网络设置：若您的源段或者目的段主机只有 IPv6，不具备 IPv4，那么请参见 <a href="https://intl.cloud.tencent.com/document/product/213/44340"> client.json 文件参数说明</a>。</li>
 	  </ol>
 	</td>
   </tr>
 </table>
-
 
 
 <dx-alert infotype="explain" title="">
@@ -78,7 +79,7 @@
 #### 通过迁移工具导入迁移源
 <dx-tabs>
 ::: Linux 服务器
-1. 将迁移工具 go2tencentcloud.zip 下载或上传至源端主机，并执行以下命令进入对应目录。
+1. 将迁移工具 go2tencentcloud.zip [下载](https://go2tencentcloud-1251783334.cos.ap-guangzhou.myqcloud.com/latest/go2tencentcloud.zip) 或上传至源端主机，并执行以下命令进入对应目录。
    1. 依次执行以下命令，解压 go2tencentcloud.zip 并进入目录。
 ```shellsession
 unzip go2tencentcloud.zip
@@ -193,6 +194,25 @@ sudo ./go2tencentcloud_x64
       <br>私有网络：迁移到云服务器镜像时，中转实例将创建在该私有网络 VPC 中。
       <br>子网：迁移到云服务器镜像时，中转实例将创建在该子网中。
     </li>
+  </ul>
+</td>
+</tr>	
+<tr>
+<td rowspan='2'>迁移方式</td>
+<td rowspan='2'>是</td>
+<td>
+  设置 Linux 块级迁移数据的迁移方式类型。
+    <ul>
+    <li><b>Linux 文件级迁移</b>：迁移颗粒度为文件级，高兼容性，相对较低的传输效率。
+    </li>
+    <li><b>Linux 块级迁移</b>：迁移颗粒度为磁盘逻辑存储单位“块”级，高传输效率，相对较低的兼容性。
+    </li>
+  </ul>
+</td>
+</tr>	
+<tr>
+<td>
+<b>Windows 块级迁移</b>：迁移颗粒度为磁盘逻辑存储单位“块”级，Windows 迁移默认采用块级迁移，具备高兼容性和高传输效率。
   </ul>
 </td>
 </tr>	

@@ -24,13 +24,20 @@ go get -u github.com/tencentyun/cos-go-sdk-v5
 The section below describes how to use the COS Go SDK to perform basic operations, such as initializing a client, creating a bucket, querying a bucket list, uploading an object, querying an object list, downloading an object, or deleting an object.
 
 ### Initialization
+
+>!
+>- We recommend you use a sub-account key and environment variables to call the SDK for security purposes. When authorizing a sub-account, follow the [Notes on Principle of Least Privilege](https://intl.cloud.tencent.com/document/product/436/32972) to avoid leaking resources besides your buckets and objects.
+>- If you must use a permanent key, we recommend you follow the [Notes on Principle of Least Privilege](https://intl.cloud.tencent.com/document/product/436/32972) to limit the scope of permission on the permanent key.
+
+
+
 A COS GO client is generated using the COS domain name.
 
 #### Method prototype
 ```Go
 func NewClient(uri *BaseURL, httpClient *http.Client) *Client
 ```
-#### Parameter description
+#### Field description
 ```
 // `BaseURL` indicates the base URL required for accessing APIs
 type BaseURL struct {
@@ -58,7 +65,7 @@ type BaseURL struct {
 ```go
 // Replace `examplebucket-1250000000` and `COS_REGION` with the actual information of users
 // Bucket name in the format of `BucketName-APPID` (`APPID` is required), which can be viewed in the COS console at https://console.cloud.tencent.com/cos5/bucket.
-// `COS_REGION` can be viewed in the COS console at https://console.cloud.tencent.com/cos5/bucket/. For more information about regions, see https://intl.cloud.tencent.com/document/product/436/6224.
+// `COS_REGION` can be viewed in the COS console at https://console.cloud.tencent.com/cos5/bucket/. For more information about regions, visit https://intl.cloud.tencent.com/document/product/436/6224.
 u, _ := url.Parse("https://examplebucket-1250000000.cos.COS_REGION.myqcloud.com")
 // The following calls the `Get Service` API. By default, all regions (service.cos.myqcloud.com) will be queried.
 su, _ := url.Parse("https://cos.COS_REGION.myqcloud.com")
@@ -66,8 +73,8 @@ b := &cos.BaseURL{BucketURL: u, ServiceURL: su}
 // 1. Permanent key
 client := cos.NewClient(b, &http.Client{
     Transport: &cos.AuthorizationTransport{
-        SecretID:  "SECRETID",  // Replace it with the actual `SecretId`, which can be viewed and managed in the CAM console at https://console.cloud.tencent.com/cam/capi.
-        SecretKey: "SECRETKEY", // Replace it with the actual `SecretKey`, which can be viewed and managed in the CAM console at https://console.cloud.tencent.com/cam/capi.
+        SecretID: os.Getenv("SECRETID"),  // User `SecretId`. We recommend you use a sub-account key and follow the principle of least privilege to reduce risks. For information about how to obtain a sub-account key, visit https://www.tencentcloud.com/document/product/598/32675.
+        SecretKey: os.Getenv("SECRETKEY"),  // User `SecretKey`. We recommend you use a sub-account key and follow the principle of least privilege to reduce risks. For information about how to obtain a sub-account key, visit https://www.tencentcloud.com/document/product/598/32675.
     },
 })
 ```
@@ -77,14 +84,14 @@ client := cos.NewClient(b, &http.Client{
 [//]: # ".cssg-snippet-global-init-sts"
 ```go
 // Replace `examplebucket-1250000000` and `COS_REGION` with the actual information
-// Bucket name in the format of `BucketName-APPID` (`APPID is required`), which can be viewed in the COS console at https://console.cloud.tencent.com/cos5/bucket.
-// `COS_REGION` can be viewed in the COS console at https://console.cloud.tencent.com/cos5/bucket/. For more information about regions, see https://intl.cloud.tencent.com/document/product/436/6224.
+// Bucket name in the format of `BucketName-APPID` (`APPID` is required), which can be viewed in the COS console at https://console.cloud.tencent.com/cos5/bucket.
+// `COS_REGION` can be viewed in the COS console at https://console.cloud.tencent.com/cos5/bucket/. For more information about regions, visit https://intl.cloud.tencent.com/document/product/436/6224.
 u, _ := url.Parse("https://examplebucket-1250000000.cos.COS_REGION.myqcloud.com")
 b := &cos.BaseURL{BucketURL: u}
 // 2. Temporary key
 client := cos.NewClient(b, &http.Client{
     Transport: &cos.AuthorizationTransport{
-        // If a temporary key is required, see at https://intl.cloud.tencent.com/document/product/436/14048 for generating and using a temporary key.
+        // If a temporary key is required, see the instructions at https://intl.cloud.tencent.com/document/product/436/14048 for generating and using a temporary key.
         SecretID:     "SECRETID",
         SecretKey:    "SECRETKEY",
         SessionToken: "SECRETTOKEN",
@@ -108,7 +115,7 @@ b := &cos.BaseURL{BucketURL: u}
 // 2. Temporary key
 client := cos.NewClient(b, &http.Client{
     Transport: &cos.AuthorizationTransport{
-        >? If a temporary key is required, see [Generating and Using Temporary Keys](https://intl.cloud.tencent.com/document/product/436/14048).
+        // If a temporary key is required, see the instructions at https://intl.cloud.tencent.com/document/product/436/14048 for generating and using a temporary key.
         SecretID:     "SECRETID",
         SecretKey:    "SECRETKEY",
         SessionToken: "SECRETTOKEN",
@@ -127,13 +134,13 @@ By default, CRC64 verification is enabled in the COS Go SDK for the uploaded obj
 ```
 // Replace `examplebucket-1250000000` and `COS_REGION` with the actual information
 // Bucket name in the format of `BucketName-APPID` (`APPID` is required), which can be viewed in the COS console at https://console.cloud.tencent.com/cos5/bucket.
-// `COS_REGION` can be viewed in the COS console at https://console.cloud.tencent.com/cos5/bucket/. For more information about regions, see https://intl.cloud.tencent.com/document/product/436/6224.
+// `COS_REGION` can be viewed in the COS console at https://console.cloud.tencent.com/cos5/bucket/. For more information about regions, visit https://intl.cloud.tencent.com/document/product/436/6224.
 u, _ := url.Parse("https://examplebucket-1250000000.cos.COS_REGION.myqcloud.com")
 b := &cos.BaseURL{BucketURL: u}
 // 2. Temporary key
 client := cos.NewClient(b, &http.Client{
     Transport: &cos.AuthorizationTransport{
-        // If a temporary key is required, see at https://intl.cloud.tencent.com/document/product/436/14048 for generating and using a temporary key.
+        // If a temporary key is required, see the instructions at https://intl.cloud.tencent.com/document/product/436/14048 for generating and using a temporary key.
         SecretID:     "SECRETID",
         SecretKey:    "SECRETKEY",
         SessionToken: "SECRETTOKEN",
@@ -161,22 +168,22 @@ import (
 )
 
 
-func main() {
+func main(){
     // Replace `examplebucket-1250000000` and `COS_REGION` with the actual information
     // Bucket name in the format of `BucketName-APPID` (`APPID` is required), which can be viewed in the COS console at https://console.cloud.tencent.com/cos5/bucket.
-    // `COS_REGION` can be viewed in the COS console at https://console.cloud.tencent.com/cos5/bucket/. For more information about regions, see https://intl.cloud.tencent.com/document/product/436/6224.
+    // `COS_REGION` can be viewed in the COS console at https://console.cloud.tencent.com/cos5/bucket/. For more information about regions, visit https://intl.cloud.tencent.com/document/product/436/6224.
     u, _ := url.Parse("https://examplebucket-1250000000.cos.COS_REGION.myqcloud.com")
     b := &cos.BaseURL{BucketURL: u}
     c := cos.NewClient(b, &http.Client{
         Transport: &cos.AuthorizationTransport{
-            SecretID:  "SECRETID",  // Replace it with the actual `SecretId` of users, which can be viewed and managed in the CAM console at https://console.cloud.tencent.com/cam/capi.
-            SecretKey: "SECRETKEY", // Replace it with the actual `SecretKey` of users, which can be viewed and managed in the CAM console at https://console.cloud.tencent.com/cam/capi.
+            SecretID: os.Getenv("SECRETID"),  // User `SecretId`. We recommend you use a sub-account key and follow the principle of least privilege to reduce risks. For information about how to obtain a sub-account key, visit https://www.tencentcloud.com/document/product/598/32675.
+            SecretKey: os.Getenv("SECRETKEY"),  // User `SecretKey`. We recommend you use a sub-account key and follow the principle of least privilege to reduce risks. For information about how to obtain a sub-account key, visit https://www.tencentcloud.com/document/product/598/32675.
         },
     })
 
 
     _, err := c.Bucket.Put(context.Background(), nil)
-    if err != nil {
+    if err != nil{
         panic(err)
     }
 }
@@ -199,17 +206,17 @@ import (
 )
 
 
-func main() {
+func main(){
     c := cos.NewClient(nil, &http.Client{
         Transport: &cos.AuthorizationTransport{
-            SecretID:  "SECRETID",  // Replace it with the actual `SecretId` of users, which can be viewed and managed in the CAM console at https://console.cloud.tencent.com/cam/capi.
-            SecretKey: "SECRETKEY", // Replace it with the actual `SecretKey`, which can be viewed and managed in the CAM console at https://console.cloud.tencent.com/cam/capi.
+            SecretID: os.Getenv("SECRETID"),  // User `SecretId`. We recommend you use a sub-account key and follow the principle of least privilege to reduce risks. For information about how to obtain a sub-account key, visit https://www.tencentcloud.com/document/product/598/32675.
+            SecretKey: os.Getenv("SECRETKEY"),  // User `SecretKey`. We recommend you use a sub-account key and follow the principle of least privilege to reduce risks. For information about how to obtain a sub-account key, visit https://www.tencentcloud.com/document/product/598/32675.
         },
     })
 
 
     s, _, err := c.Service.Get(context.Background())
-    if err != nil {
+    if err != nil{
         panic(err)
     }
 
@@ -236,16 +243,16 @@ import (
 )
 
 
-func main() {
-    // Replace examplebucket-1250000000 and COS_REGION with the actual information
+func main(){
+    // Replace `examplebucket-1250000000` and `COS_REGION` with the actual information
     // Bucket name in the format of `BucketName-APPID` (`APPID` is required), which can be viewed in the COS console at https://console.cloud.tencent.com/cos5/bucket.
-    // `COS_REGION` can be viewed in the COS console at https://console.cloud.tencent.com/cos5/bucket/. For more information about regions, see https://intl.cloud.tencent.com/document/product/436/6224.
+    // `COS_REGION` can be viewed in the COS console at https://console.cloud.tencent.com/cos5/bucket/. For more information about regions, visit https://intl.cloud.tencent.com/document/product/436/6224.
     u, _ := url.Parse("https://examplebucket-1250000000.cos.COS_REGION.myqcloud.com")
     b := &cos.BaseURL{BucketURL: u}
     c := cos.NewClient(b, &http.Client{
         Transport: &cos.AuthorizationTransport{
-            SecretID:  "SECRETID",  // Replace it with the actual `SecretId`, which can be viewed and managed in the CAM console at https://console.cloud.tencent.com/cam/capi.
-            SecretKey: "SECRETKEY", // Replace it with the actual `SecretKey`, which can be viewed and managed in the CAM console at https://console.cloud.tencent.com/cam/capi.
+            SecretID: os.Getenv("SECRETID"),  // User `SecretId`. We recommend you use a sub-account key and follow the principle of least privilege to reduce risks. For information about how to obtain a sub-account key, visit https://www.tencentcloud.com/document/product/598/32675.
+            SecretKey: os.Getenv("SECRETKEY"),  // User `SecretKey`. We recommend you use a sub-account key and follow the principle of least privilege to reduce risks. For information about how to obtain a sub-account key, visit https://www.tencentcloud.com/document/product/598/32675.
         },
     })
     // An object key is the unique identifier of an object in a bucket
@@ -256,22 +263,22 @@ func main() {
 
 
     _, err := c.Object.Put(context.Background(), name, f, nil)
-    if err != nil {
+    if err != nil{
         panic(err)
     }
     // 2. Upload the object with a local file.
     _, err = c.Object.PutFromFile(context.Background(), name, "../test", nil)
-    if err != nil {
+    if err != nil{
         panic(err)
     }
     // 3. Upload the object with a file stream.
     fd, err := os.Open("./test")
-    if err != nil {
+    if err != nil{
         panic(err)
     }
     defer fd.Close()
     _, err = c.Object.Put(context.Background(), name, fd, nil)
-    if err != nil {
+    if err != nil{
         panic(err)
     }
 }
@@ -293,16 +300,16 @@ import (
 )
 
 
-func main() {
+func main(){
     // Replace `examplebucket-1250000000` and `COS_REGION` with the actual information
     // Bucket name in the format of `BucketName-APPID` (`APPID` is required), which can be viewed in the COS console at https://console.cloud.tencent.com/cos5/bucket.
-    // `COS_REGION` can be viewed in the COS console at https://console.cloud.tencent.com/cos5/bucket/. For more information about regions, see https://intl.cloud.tencent.com/document/product/436/6224.
+    // `COS_REGION` can be viewed in the COS console at https://console.cloud.tencent.com/cos5/bucket/. For more information about regions, visit https://intl.cloud.tencent.com/document/product/436/6224.
     u, _ := url.Parse("https://examplebucket-1250000000.cos.COS_REGION.myqcloud.com")
     b := &cos.BaseURL{BucketURL: u}
     c := cos.NewClient(b, &http.Client{
         Transport: &cos.AuthorizationTransport{
-            SecretID:  "SECRETID",  // Replace it with the actual `SecretId`, which can be viewed and managed in the CAM console at https://console.cloud.tencent.com/cam/capi.
-            SecretKey: "SECRETKEY", // Replace it with the actual `SecretKey`, which can be viewed and managed in the CAM console at https://console.cloud.tencent.com/cam/capi.
+            SecretID: os.Getenv("SECRETID"),  // User `SecretId`. We recommend you use a sub-account key and follow the principle of least privilege to reduce risks. For information about how to obtain a sub-account key, visit https://www.tencentcloud.com/document/product/598/32675.
+            SecretKey: os.Getenv("SECRETKEY"),  // User `SecretKey`. We recommend you use a sub-account key and follow the principle of least privilege to reduce risks. For information about how to obtain a sub-account key, visit https://www.tencentcloud.com/document/product/598/32675.
         },
     })
 
@@ -312,7 +319,7 @@ func main() {
         MaxKeys: 3,
     }
     v, _, err := c.Bucket.Get(context.Background(), opt)
-    if err != nil {
+    if err != nil{
         panic(err)
     }
 
@@ -340,22 +347,22 @@ import (
 )
 
 
-func main() {
+func main(){
     // Replace `examplebucket-1250000000` and `COS_REGION` with the actual information
     // Bucket name in the format of `BucketName-APPID` (`APPID` is required), which can be viewed in the COS console at https://console.cloud.tencent.com/cos5/bucket.
-    // `COS_REGION` can be viewed in the COS console at https://console.cloud.tencent.com/cos5/bucket/. For more information about regions, see https://intl.cloud.tencent.com/document/product/436/6224.
+    // `COS_REGION` can be viewed in the COS console at https://console.cloud.tencent.com/cos5/bucket/. For more information about regions, visit https://intl.cloud.tencent.com/document/product/436/6224.
     u, _ := url.Parse("https://examplebucket-1250000000.cos.COS_REGION.myqcloud.com")
     b := &cos.BaseURL{BucketURL: u}
     c := cos.NewClient(b, &http.Client{
         Transport: &cos.AuthorizationTransport{
-            SecretID:  "SECRETID",  // Replace it with the actual `SecretId`, which can be viewed and managed in the CAM console at https://console.cloud.tencent.com/cam/capi.
-            SecretKey: "SECRETKEY", // Replace it with the actual `SecretKey`, which can be viewed and managed in the CAM console at https://console.cloud.tencent.com/cam/capi.
+            SecretID: os.Getenv("SECRETID"),  // User `SecretId`. We recommend you use a sub-account key and follow the principle of least privilege to reduce risks. For information about how to obtain a sub-account key, visit https://www.tencentcloud.com/document/product/598/32675.
+            SecretKey: os.Getenv("SECRETKEY"),  // User `SecretKey`. We recommend you use a sub-account key and follow the principle of least privilege to reduce risks. For information about how to obtain a sub-account key, visit https://www.tencentcloud.com/document/product/598/32675.
         },
     })
     // 1. Obtain the object through response body
     name := "test/objectPut.go"
     resp, err := c.Object.Get(context.Background(), name, nil)
-    if err != nil {
+    if err != nil{
         panic(err)
     }
     bs, _ := ioutil.ReadAll(resp.Body)
@@ -363,7 +370,7 @@ func main() {
     fmt.Printf("%s\n", string(bs))
     // 2. Download the object to the local file system
     _, err = c.Object.GetToFile(context.Background(), name, "exampleobject", nil)
-    if err != nil {
+    if err != nil{
         panic(err)
     }
 }
@@ -384,21 +391,21 @@ import (
 )
 
 
-func main() {
+func main(){
     // Replace `examplebucket-1250000000` and `COS_REGION` with the actual information
     // Bucket name in the format of `BucketName-APPID` (`APPID` is required), which can be viewed in the COS console at https://console.cloud.tencent.com/cos5/bucket.
-    // `COS_REGION` can be viewed in the COS console at https://console.cloud.tencent.com/cos5/bucket/. For more information about regions, see https://intl.cloud.tencent.com/document/product/436/6224.
+    // `COS_REGION` can be viewed in the COS console at https://console.cloud.tencent.com/cos5/bucket/. For more information about regions, visit https://intl.cloud.tencent.com/document/product/436/6224.
     u, _ := url.Parse("https://examplebucket-1250000000.cos.COS_REGION.myqcloud.com")
     b := &cos.BaseURL{BucketURL: u}
     c := cos.NewClient(b, &http.Client{
         Transport: &cos.AuthorizationTransport{
-            SecretID:  "SECRETID",  // Replace it with the actual `SecretId`, which can be viewed and managed in the CAM console at https://console.cloud.tencent.com/cam/capi.
-            SecretKey: "SECRETKEY", // Replace it with the actual `SecretKey`, which can be viewed and managed in the CAM console at https://console.cloud.tencent.com/cam/capi.
+            SecretID: os.Getenv("SECRETID"),  // User `SecretId`. We recommend you use a sub-account key and follow the principle of least privilege to reduce risks. For information about how to obtain a sub-account key, visit https://www.tencentcloud.com/document/product/598/32675.
+            SecretKey: os.Getenv("SECRETKEY"),  // User `SecretKey`. We recommend you use a sub-account key and follow the principle of least privilege to reduce risks. For information about how to obtain a sub-account key, visit https://www.tencentcloud.com/document/product/598/32675.
         },
     })
     name := "test/objectPut.go"
     _, err := c.Object.Delete(context.Background(), name)
-    if err != nil {
+    if err != nil{
         panic(err)
     }
 }

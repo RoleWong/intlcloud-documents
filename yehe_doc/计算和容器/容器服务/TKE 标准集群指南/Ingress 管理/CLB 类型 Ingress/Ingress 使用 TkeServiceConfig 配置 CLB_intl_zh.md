@@ -5,7 +5,7 @@ TkeServiceConfig 是腾讯云容器服务 TKE 提供的自定义资源 CRD，通
 Ingress YAML 的语义无法定义的负载均衡参数和功能，可以通过 TkeServiceConfig 来配置。
 
 ### 配置说明
-使用 TkeServiceConfig 能够帮您快速进行负载均衡器的配置。通过 Ingress 注解 **ingress.cloud.tencent.com/tke-service-config:&lt;config-name&gt;**，您可以指定目标配置应用到 Ingress 中。
+使用 TkeServiceConfig 能够帮您快速进行负载均衡器的配置。通过 Ingress 注解 **`ingress.cloud.tencent.com/tke-service-config:&lt;config-name&gt;`** ，您可以指定目标配置应用到 Ingress 中。
 >! TkeServiceConfig 资源需要和 Ingress 处于同一命名空间。
 
 TkeServiceConfig 不会帮您配置并修改协议、端口、域名以及转发路径，您需要在配置中描述协议、端口、域名还有转发路径以便指定配置下发的转发规则。
@@ -19,8 +19,8 @@ TkeServiceConfig 不会帮您配置并修改协议、端口、域名以及转发
  - `spec.loadBalancer.l7Listeners.port`：监听端口
  - `spec.loadBalancer.l7Listeners.domains[].domain`：域名
  - `spec.loadBalancer.l7Listeners.domains[].rules[].url`：转发路径
- - `spec.loadBalancer.l7listeners.protocol.domain.rules.url.forwardType`: 指定后端协议
-    - 后端协议是指 CLB 与后端服务之间的协议：后端协议选择 HTTP 时，后端服务需部署 HTTP 服务。后端协议选中 HTTPS 时，后端服务需部署 HTTPS 服务，HTTPS 服务的加解密会让后端服务消耗更多资源。更多请查看 [CLB 配置 HTTPS 监听器](https://intl.cloud.tencent.com/document/product/214/32516)
+ - `spec.loadBalancer.l7listeners.protocol.domain.rules.url.forwardType`：指定后端协议。
+    - 后端协议是指 CLB 与后端服务之间的协议：后端协议选择 HTTP 时，后端服务需部署 HTTP 服务。后端协议选中 HTTPS 时，后端服务需部署 HTTPS 服务，HTTPS 服务的加解密会让后端服务消耗更多资源。更多请查看 [CLB 配置 HTTPS 监听器](https://intl.cloud.tencent.com/document/product/214/32516)。
 
 >?当您的域名配置为默认值，即公网或内网 VIP 时，可以通过 domain 填空值的方式进行配置。
 
@@ -124,7 +124,7 @@ metadata:
     kubernetes.io/ingress.https-rules: '[{"path":"/","backend":{"serviceName":"jetty-service","servicePort":"443","host":"sample.tencent.com"}}]'
     ingress.cloud.tencent.com/tke-service-config: jetty-ingress-config
     # 指定已有的 tke-service-config
-    # service.cloud.tencent.com/tke-service-config-auto: true 
+    # ingress.cloud.tencent.com/tke-service-config-auto: "true"
     # 自动创建 tke-service-config
   name: jetty-ingress
   namespace: default
@@ -147,7 +147,7 @@ spec:
   - secretName: jetty-cert-secret
 ```
 该示例包含以下配置：
-- 使用了混合协议，使用默认域名（公网 IP）暴露了一个 HTTP 服务，使用 `sample.tencent.com` 域名暴露了一个 HTTPS 服务。<!-- 详情请参见 [Ingress 混合使用 HTTP 及 HTTPS 协议]()。-->
+- 使用了混合协议，使用默认域名（公网 IP）暴露了一个 HTTP 服务，使用 `sample.tencent.com` 域名暴露了一个 HTTPS 服务。
 - HTTP 服务的转发路径是 `/health`，HTTPS 服务的转发路径是`/`。
 - 使用了 `jetty-ingress-config` 负载均衡配置。
 
@@ -173,6 +173,7 @@ spec:
     - protocol: HTTPS
       port: 443
       defaultServer: "sample.tencent.com" # 默认域名
+      keepaliveEnable: 1                  # 监听器开启长连接
       domains:
       - domain: "sample.tencent.com"
         rules:

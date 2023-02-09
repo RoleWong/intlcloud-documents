@@ -1,14 +1,19 @@
 
 ## Overview
+This document describes how to use the content moderation feature provided by [Cloud Infinite (CI)](https://www.tencentcloud.com/document/product/1045). CI fully integrates the processing capabilities with the COS SDK.
+
+>?To use the content moderation service, you need to have the permission to use CI:
+- For root accounts, click [here](https://console.cloud.tencent.com/cam/role/grant?roleName=CI_QCSRole&policyName=QcloudCOSDataFullControl,QcloudAccessForCIRole,QcloudPartAccessForCIRole&principal=eyJzZXJ2aWNlIjoiY2kucWNsb3VkLmNvbSJ9&serviceType=%E6%95%B0%E6%8D%AE%E4%B8%87%E8%B1%A1&s_url=https%3A%2F%2Fconsole.cloud.tencent.com%2Fci) for role authorization.
+- For sub-accounts, see [Authorizing Sub-Accounts to Access CI Services](https://intl.cloud.tencent.com/document/product/1045/33450).
 
 This document provides an overview of APIs and SDK code samples for file moderation.
 
 | API | Description |
 | :--------------- | :------------------ |
-|[Submitting file moderation job](https://intl.cloud.tencent.com/document/product/436/48258) | Submits file moderation job.   |
-|[Querying file moderation job result](https://intl.cloud.tencent.com/document/product/436/48259)  | Queries the result of specified file moderation job. |
+| [Submitting file moderation job](https://intl.cloud.tencent.com/document/product/436/48258) | Submits a file moderation job.   |
+| [Querying file moderation job result](https://intl.cloud.tencent.com/document/product/436/48259)  | Queries the result of a specified file moderation job. |
 
-## Creating Job
+## Creating a Job
 
 This API (`PutDocumentAuditingJob`) is used to submit a file moderation job. You can receive the moderation result by setting the callback address or querying by `JobId`.
 
@@ -21,7 +26,7 @@ func (s *CIService) PutDocumentAuditingJob(ctx context.Context, opt *PutDocument
 #### Sample request
 
 ```go
-// Replace `examplebucket-1250000000` and `COS_REGION` with your actual information
+// Replace examplebucket-1250000000 and COS_REGION with the actual information.
 // For CI jobs, you need to provide the CIURL.
 bu, _ := url.Parse("https://examplebucket-1250000000.cos.COS_REGION.myqcloud.com")
 cu, _ := url.Parse("https://examplebucket-1250000000.ci.COS_REGION.myqcloud.com")
@@ -77,7 +82,7 @@ type DocumentAuditingJobConf struct {
 | InputDataId | File ID. This field will return the original content in the result, which can contain up to 512 bytes. | String |
 | InputUserInfo | Business field. | Object |
 | Conf        | Moderation rule configuration.                                                 | Struct |
-| BizType     | Moderation policy. If this parameter is not specified, the default policy will be used. The policy can be configured in the console as instructed in Setting Moderation Policy. | String |
+| BizType     | Moderation policy. If this parameter is not specified, the default policy will be used. The policy can be configured in the console as instructed in [Setting Moderation Policy](https://intl.cloud.tencent.com/document/product/436/52095). | String |
 | DetectType  | The scene to be moderated, such as `Porn` (pornography) and `Ads` (advertising). You can pass in multiple types and separate them by comma, such as `Porn,Ads`. If you need to moderate more scenes, use the `BizType` parameter. | String |
 | Callback    | The moderation result can be sent to your callback address in the form of a callback. Addresses starting with `http://` or `https://` are supported, such as `http://www.callback.com`.  | String |
 
@@ -86,7 +91,7 @@ type DocumentAuditingJobConf struct {
 Calling the `PutDocumentAuditingJob` function will parse the XML content returned by the API into a `PutDocumentAuditingJobResult` structure. For specific response parameters, see [Submitting File Moderation Job](https://intl.cloud.tencent.com/document/product/436/48258).
 
 
-## Querying Job
+## Querying a Job
 
 This API (`GetDocumentAuditingJob`) is used to query the result of the specified file moderation job by `JobId`.
 
@@ -99,7 +104,7 @@ func (s *CIService) GetDocumentAuditingJob(ctx context.Context, jobid string) (*
 #### Sample request
 
 ```go
-// Replace `examplebucket-1250000000` and `COS_REGION` with your actual information
+// Replace examplebucket-1250000000 and COS_REGION with the actual information.
 // For CI jobs, you need to provide the CIURL.
 bu, _ := url.Parse("https://examplebucket-1250000000.cos.COS_REGION.myqcloud.com")
 cu, _ := url.Parse("https://examplebucket-1250000000.ci.COS_REGION.myqcloud.com")
